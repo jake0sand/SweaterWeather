@@ -1,5 +1,6 @@
 package com.jakey.sweaterweather.presentation
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,7 +18,7 @@ class WeatherViewModel @Inject constructor(
     private val repository: WeatherRepository
 ): ViewModel() {
 
-    private val _city = MutableLiveData<String>("Denver")
+    private val _city = MutableLiveData<String>("Denver Co")
     val city: LiveData<String> get() = _city
 
     private val _weatherLiveData = MutableLiveData<WeatherResponse>()
@@ -27,7 +28,7 @@ class WeatherViewModel @Inject constructor(
     val loading: LiveData<Boolean> get() = _loading
 
     fun setCity(city: String) = viewModelScope.launch {
-        _city.postValue(city)
+        _city.value = city
     }
 
     fun getWeather(city: String) = viewModelScope.launch {
@@ -38,7 +39,8 @@ class WeatherViewModel @Inject constructor(
                 _loading.postValue(false)
                 _weatherLiveData.postValue(response.body())
             } else {
-                Log.d("Tag", "getWeather Error Response: ${response.message()}")
+                null
+                Log.d("Taggg", "getWeather Error Response: ${response.message()}")
             }
         }
         _loading.postValue(false)

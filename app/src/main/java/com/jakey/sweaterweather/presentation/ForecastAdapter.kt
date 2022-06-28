@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.jakey.sweaterweather.R
 import com.jakey.sweaterweather.data.remote.responses.ForecastResponse
 import com.jakey.sweaterweather.data.remote.responses.toForecast
 import com.jakey.sweaterweather.databinding.ForecastCardItemBinding
@@ -31,6 +32,10 @@ class ForecastAdapter(
         holder.binding.apply {
             tvTempForecast.text = currentItem.tempF.toString()
             tvWindForecast.text = currentItem.windM.toString()
+            if (currentItem.tempF.filter { it.isDigit() }.toInt() >= 70) {
+                ivForecast.setImageResource(R.drawable.sunny)
+            } else ivForecast.setImageResource(R.drawable.cloudy)
+
         }
 
     }
