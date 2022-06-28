@@ -55,11 +55,6 @@ class MainActivity : AppCompatActivity() {
         if (timeOfDay >= 17) binding.root.background = getDrawable(R.drawable.night_background)
 
 
-
-
-
-
-
         viewModel.loading.observe(this) { loading ->
             binding.apply {
                 animCurrentWeather.isVisible = !loading

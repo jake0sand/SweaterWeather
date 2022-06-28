@@ -1,5 +1,6 @@
 package com.jakey.sweaterweather.presentation
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,13 +8,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jakey.sweaterweather.data.remote.responses.WeatherResponse
 import com.jakey.sweaterweather.domain.repository.WeatherRepository
+import com.jakey.sweaterweather.utils.SharedPrefsUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
+    application: Application,
+    sharedPrefs: SharedPrefsUtil,
     private val repository: WeatherRepository
 ): ViewModel() {
 
@@ -25,6 +30,10 @@ class WeatherViewModel @Inject constructor(
 
     private val _loading = MutableLiveData<Boolean>(false)
     val loading: LiveData<Boolean> get() = _loading
+
+    init {
+        getWeather(city = sharedPrefs.getLocation())
+    }
 
     fun setCity(city: String) = viewModelScope.launch {
         _city.postValue(city)
