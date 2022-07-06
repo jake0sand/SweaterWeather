@@ -1,6 +1,6 @@
 package com.jakey.sweaterweather.di
 
-import com.jakey.sweaterweather.data.remote.WeatherApiService
+import com.jakey.sweaterweather.data.remote.WeatherApi
 import com.jakey.sweaterweather.utils.Constants
 import dagger.Module
 import dagger.Provides
@@ -19,10 +19,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofitInstance(BASE_URL: String): WeatherApiService =
+    fun provideRetrofitInstance(BASE_URL: String): WeatherApi =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(WeatherApiService::class.java)
+            .create(WeatherApi::class.java)
 }

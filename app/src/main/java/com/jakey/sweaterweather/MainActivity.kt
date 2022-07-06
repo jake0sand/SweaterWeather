@@ -1,30 +1,36 @@
 package com.jakey.sweaterweather
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.isVisible
-import com.jakey.sweaterweather.data.remote.responses.toWeather
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import com.jakey.sweaterweather.data.DataStoreManager
+import com.jakey.sweaterweather.data.remote.WeatherApi
 import com.jakey.sweaterweather.databinding.ActivityMainBinding
-import com.jakey.sweaterweather.presentation.ForecastAdapter
+import com.jakey.sweaterweather.presentation.WeatherAdapter
 import com.jakey.sweaterweather.presentation.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.SimpleDateFormat
-import java.util.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
     private val viewModel: WeatherViewModel by viewModels()
-    private lateinit var forecastAdapter: ForecastAdapter
+    private lateinit var weatherAdapter: WeatherAdapter
+    @Inject lateinit var dataStore: DataStoreManager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,99 +43,87 @@ class MainActivity : AppCompatActivity() {
         windowInsetsController?.isAppearanceLightNavigationBars = true
 
 
-        val date = Date()
-        val formatter = SimpleDateFormat("HH")
-        val timeOfDay = (formatter.format(date)).toInt()
-        Log.d("Date", "TIME: $timeOfDay")
+        lifecycleScope.launchWhenStarted {
 
-        val daysMap: Map<Int, String> = mapOf(
-            0 to "Sunday",
-            1 to "Monday",
-            2 to "Tuesday",
-            3 to "Wednesday",
-            4 to "Thursday",
-            5 to "Friday",
-            6 to "Saturday",
-        )
+//
 
-        if (timeOfDay >= 17) binding.root.background = getDrawable(R.drawable.night_background)
+            viewModel.weatherStateFlow.collectLatest {
+                binding.apply {
+                    tvCurrentTemp.text = "${it.tempF} °F"
+                    tvWind.text = "${it.windM} mph"
+                    tvDescription.text = it.conditionText
+                    if (it.conditionText.contains("rain".lowercase())) {
+                        animCurrentWeather.setAnimation(R.raw.partly_shower)
+                    } else {
+                        animCurrentWeather.setAnimation(R.raw.mostly_sunny)
+                    }
+                    tvLocation.text = dataStore.readLocation()
 
-
-
-
-
-
-
-        viewModel.loading.observe(this) { loading ->
-            binding.apply {
-                animCurrentWeather.isVisible = !loading
-                tvCurrentTemp.isVisible = !loading
-                tvDescription.isVisible = !loading
-                animWind.isVisible = !loading
-                tvWind.isVisible = !loading
-                lottieAnim.isVisible = loading
-                recyclerview.isVisible = !loading
-
-                if (loading) lottieAnim.playAnimation()
-            }
-
-        }
-
-        viewModel.city.observe(this) {
-            binding.tvLocation.text = it
-            viewModel.getWeather(it)
-        }
-
-
-        binding.icEditLocation.setOnClickListener {
-            binding.apply {
-                icEditLocation.isVisible = false
-                tvLocation.visibility = View.INVISIBLE
-                etLocation.isVisible = true
-                icCheck.isVisible = true
-                icCheck.setOnClickListener {
-                    binding.apply {
-                        etLocation.isVisible = false
-                        icCheck.isVisible = false
-                        viewModel.setCity(etLocation.text.toString())
-                        tvLocation.isVisible = true
-                        icEditLocation.isVisible = true
-                        etLocation.hideKeyboard()
+                    icLocation.setOnClickListener {
+                        saveLocationDialog()
                     }
                 }
+
+
+            }
+            viewModel.forecastStateFlow.collectLatest {
+                Snackbar.make(binding.root, "${it.map { it.tempF }}", Snackbar.LENGTH_INDEFINITE).show()
             }
         }
 
-        viewModel.weatherLiveData.observe(this) { weatherResponse ->
-
-            binding.apply {
-                tvCurrentTemp.text = (weatherResponse.toWeather().temperatureF)
-                tvCurrentTemp.setOnClickListener {
-                    if (tvCurrentTemp.text.contains('F')) {
-                        tvCurrentTemp.text = (weatherResponse.toWeather().temperatureC)
-                    } else if (tvCurrentTemp.text.contains('C')) {
-                        tvCurrentTemp.text = (weatherResponse.toWeather().temperatureF)
-                    }
-                    if (tvWind.text.contains('k')) {
-                        tvWind.text = weatherResponse.toWeather().windM
-                    } else if (tvWind.text.contains('p')) {
-                        tvWind.text = weatherResponse.toWeather().windK
-                    }
-                }
-                tvDescription.text = weatherResponse.toWeather().description
-                tvWind.text = weatherResponse.toWeather().windM
-            }
-            forecastAdapter = ForecastAdapter(weatherList = weatherResponse.forecast)
-            Log.i("weatherlist", "${weatherResponse.forecast}")
-            binding.recyclerview.apply {
-                adapter = forecastAdapter
-                setHasFixedSize(true)
-            }
-        }
+        setupRv()
     }
 
     private fun EditText.hideKeyboard(): Boolean {
         return (context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
             .hideSoftInputFromWindow(windowToken, 0)
+    }
+
+    private fun setupRv() {
+        weatherAdapter = WeatherAdapter()
+
+        binding.recyclerview.apply {
+            adapter = weatherAdapter
+            layoutManager = LinearLayoutManager(
+                this@MainActivity, LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            setHasFixedSize(true)
+        }
+        lifecycleScope.launchWhenStarted {
+            viewModel.forecastStateFlow.collectLatest {
+                weatherAdapter.forecastList = it
+                Log.i("forecastLite", it[0].conditionIcon)
+            }
+        }
+    }
+
+    private fun saveLocationDialog() {
+        val dialogBuilder =
+            AlertDialog.Builder(this)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.edit_text_custom_dialog, null)
+        dialogBuilder.setView(dialogView)
+        val editText: EditText = dialogView.findViewById(R.id.edit_text_1)
+
+        dialogBuilder.apply {
+            setTitle("Set Baby's name")
+            lifecycleScope.launch { editText.setText(dataStore.readLocation()) }
+            setPositiveButton("Save") { _, _ ->
+                lifecycleScope.launch {
+                    binding
+                    dataStore.saveLocation(value = editText.text.toString())
+
+                    Snackbar.make(binding.root, "Default Location Saved", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+
+            }
+            setNegativeButton(
+                "Cancel"
+            ) { _, _ ->
+
+            }.show()
+        }
     }
 }

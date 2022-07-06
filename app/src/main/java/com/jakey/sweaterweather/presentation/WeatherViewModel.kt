@@ -1,46 +1,48 @@
 package com.jakey.sweaterweather.presentation
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jakey.sweaterweather.data.remote.responses.WeatherResponse
+import com.jakey.sweaterweather.domain.current_weather.WeatherLite
 import com.jakey.sweaterweather.domain.repository.WeatherRepository
+import com.jakey.sweaterweather.data.DataStoreManager
+import com.jakey.sweaterweather.domain.forecast.ForecastLite
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val repository: WeatherRepository
+    private val repository: WeatherRepository,
+    private val dataStore: DataStoreManager
 ): ViewModel() {
 
-    private val _city = MutableLiveData<String>("Denver")
-    val city: LiveData<String> get() = _city
+    private val _weatherStateFlow = MutableStateFlow(WeatherLite())
+    val weatherStateFlow = _weatherStateFlow.asStateFlow()
 
-    private val _weatherLiveData = MutableLiveData<WeatherResponse>()
-    val weatherLiveData: LiveData<WeatherResponse> get() = _weatherLiveData
+    private val _forecastStateFlow = MutableStateFlow(listOf(ForecastLite()))
+    val forecastStateFlow = _forecastStateFlow.asStateFlow()
 
-    private val _loading = MutableLiveData<Boolean>(false)
-    val loading: LiveData<Boolean> get() = _loading
-
-    fun setCity(city: String) = viewModelScope.launch {
-        _city.postValue(city)
-    }
-
-    fun getWeather(city: String) = viewModelScope.launch {
-        _loading.postValue(true)
-        repository.getWeather(city).let { response ->
-            Log.i("Response", response.toString())
-            if (response.isSuccessful) {
-                _loading.postValue(false)
-                _weatherLiveData.postValue(response.body())
-            } else {
-                Log.d("Tag", "getWeather Error Response: ${response.message()}")
-            }
+    init {
+        viewModelScope.launch {
+            getCurrentWeather(city = dataStore.readLocation())
+            getForecast(city = dataStore.readLocation())
         }
-        _loading.postValue(false)
     }
+
+    fun getForecast(city: String) {
+        viewModelScope.launch {
+            val response = repository.getForecast(city)
+            _forecastStateFlow.value = response
+        }
+    }
+
+    fun getCurrentWeather(city: String) {
+        viewModelScope.launch {
+            val response = repository.getCurrentWeather(city)
+            _weatherStateFlow.value = response
+        }
+    }
+
 }

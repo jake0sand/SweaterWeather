@@ -16,6 +16,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+        buildConfigField "String", "API_KEY", "\"${properties.getProperty("API_KEY")}\""
     }
 
     buildFeatures{
@@ -64,6 +69,12 @@ dependencies {
     //dagger-hilt
     implementation "com.google.dagger:hilt-android:2.38.1"
     kapt "com.google.dagger:hilt-compiler:2.38.1"
+
+    // Datastore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    // Coil
+    implementation("io.coil-kt:coil:2.1.0")
 
     def lottieVersion= "5.1.1"
     implementation "com.airbnb.android:lottie:$lottieVersion"

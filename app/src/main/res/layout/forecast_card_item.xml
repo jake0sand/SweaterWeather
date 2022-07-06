@@ -8,7 +8,7 @@
     app:cardBackgroundColor="@android:color/darker_gray"
     android:layout_marginHorizontal="4dp"
     android:layout_marginBottom="?attr/actionBarSize"
-    android:alpha=".8"
+    android:alpha=".6"
     android:elevation="20dp"
     app:cardCornerRadius="35dp"
     android:padding="8dp"
@@ -30,7 +30,7 @@
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/iv_forecast"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/ic_wind"
             app:layout_constraintTop_toBottomOf="@+id/tv_temp_forecast"
             tools:text="55" />
 
@@ -59,7 +59,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/ic_wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
