@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.jakey.sweaterweather.databinding.ForecastCardItemBinding
 import com.jakey.sweaterweather.domain.forecast.ForecastLite
+import java.text.SimpleDateFormat
 
 class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() {
 
@@ -43,8 +44,9 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
 
         holder.binding.apply {
             tvWindForecast.text = currentForecast.windM.toString()
-            tvTempForecast.text = currentForecast.tempF.toString()
+            tvTempForecast.text = "HI   ${currentForecast.tempF}"
             ivForecast.load(currentForecast.conditionIcon)
+            tvDay.text = currentForecast.date
         }
     }
 

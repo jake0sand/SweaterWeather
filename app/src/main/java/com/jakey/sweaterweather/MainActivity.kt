@@ -22,6 +22,8 @@ import com.jakey.sweaterweather.presentation.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -42,17 +44,22 @@ class MainActivity : AppCompatActivity() {
             ViewCompat.getWindowInsetsController(window.decorView)
         windowInsetsController?.isAppearanceLightNavigationBars = true
 
+        val date = Date()
+        val formatter = SimpleDateFormat("HH")
+        val timeOfDay = (formatter.format(date)).toInt()
+        Log.d("Date", "TIME: $timeOfDay")
+
+
+        if (timeOfDay >= 17) binding.root.background = getDrawable(R.drawable.night_background)
 
         lifecycleScope.launchWhenStarted {
 
-//
-
-            viewModel.weatherStateFlow.collectLatest {
+            viewModel.weatherStateFlow.collectLatest { currentWeather ->
                 binding.apply {
-                    tvCurrentTemp.text = "${it.tempF} °F"
-                    tvWind.text = "${it.windM} mph"
-                    tvDescription.text = it.conditionText
-                    if (it.conditionText.contains("rain".lowercase())) {
+                    tvCurrentTemp.text = "${currentWeather.tempF} °F"
+                    tvWind.text = "${currentWeather.windM} mph"
+                    tvDescription.text = currentWeather.conditionText
+                    if (currentWeather.conditionText.contains("rain".lowercase())) {
                         animCurrentWeather.setAnimation(R.raw.partly_shower)
                     } else {
                         animCurrentWeather.setAnimation(R.raw.mostly_sunny)
@@ -93,7 +100,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             viewModel.forecastStateFlow.collectLatest {
                 weatherAdapter.forecastList = it
-                Log.i("forecastLite", it[0].conditionIcon)
             }
         }
     }
@@ -107,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         val editText: EditText = dialogView.findViewById(R.id.edit_text_1)
 
         dialogBuilder.apply {
-            setTitle("Set Baby's name")
+            setTitle("Set default location")
             lifecycleScope.launch { editText.setText(dataStore.readLocation()) }
             setPositiveButton("Save") { _, _ ->
                 lifecycleScope.launch {

@@ -5,10 +5,9 @@
     style="@style/Widget.Material3.CardView.Filled"
     android:layout_width="120dp"
     android:layout_height="match_parent"
-    app:cardBackgroundColor="@android:color/darker_gray"
+    app:cardBackgroundColor="#33FFFFFF"
     android:layout_marginHorizontal="4dp"
     android:layout_marginBottom="?attr/actionBarSize"
-    android:alpha=".6"
     android:elevation="20dp"
     app:cardCornerRadius="35dp"
     android:padding="8dp"
@@ -19,52 +18,64 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#1AFFFFFF"
         tools:layout_height="200dp">
 
         <TextView
-            android:id="@+id/tv_wind_forecast"
+            android:id="@+id/tv_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/iv_forecast"
-            app:layout_constraintStart_toEndOf="@+id/ic_wind"
-            app:layout_constraintTop_toBottomOf="@+id/tv_temp_forecast"
-            tools:text="55" />
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Today" />
 
         <ImageView
             android:id="@+id/iv_forecast"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:src="@drawable/thunderstorms"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_day" />
 
         <TextView
             android:id="@+id/tv_temp_forecast"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textColor="@color/white"
             android:layout_marginTop="4dp"
+            android:textColor="@color/white"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="@id/iv_forecast"
             app:layout_constraintStart_toStartOf="@id/iv_forecast"
             app:layout_constraintTop_toBottomOf="@id/iv_forecast"
             tools:text="55" />
 
-
+        <TextView
+            android:id="@+id/tv_wind_forecast"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/ic_wind"
+            tools:text="55" />
 
         <ImageView
             android:id="@+id/ic_wind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_temp_forecast"
-            app:layout_constraintTop_toBottomOf="@+id/tv_temp_forecast"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_wind_forecast"
+            app:layout_constraintEnd_toStartOf="@+id/tv_wind_forecast"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_wind_forecast"
             app:srcCompat="@drawable/ic_wind" />
 
 
