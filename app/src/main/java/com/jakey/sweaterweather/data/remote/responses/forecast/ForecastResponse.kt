@@ -13,7 +13,7 @@ fun ForecastResponse.toWeather(): WeatherLite {
         tempF = current.temp_f.toInt(),
         windM = current.wind_mph.toInt(),
         conditionText = current.condition.text,
-        conditionIcon = current.condition.icon
+        conditionIcon = "https:${current.condition.icon}"
     )
 }
 

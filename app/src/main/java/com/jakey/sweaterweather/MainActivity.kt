@@ -5,14 +5,19 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.google.android.material.snackbar.Snackbar
 import com.jakey.sweaterweather.data.DataStoreManager
 import com.jakey.sweaterweather.data.remote.WeatherApi
@@ -20,6 +25,7 @@ import com.jakey.sweaterweather.databinding.ActivityMainBinding
 import com.jakey.sweaterweather.presentation.WeatherAdapter
 import com.jakey.sweaterweather.presentation.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -54,20 +60,35 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launchWhenStarted {
 
+            viewModel.isLoading.collectLatest { isLoading ->
+                binding.apply {
+                    progressBar.isVisible = isLoading
+                    if (isLoading) progressBar.playAnimation()
+                    group.isVisible = !isLoading
+                }
+            }
+        }
+
+        lifecycleScope.launchWhenStarted {
+
             viewModel.weatherStateFlow.collectLatest { currentWeather ->
                 binding.apply {
                     tvCurrentTemp.text = "${currentWeather.tempF} °F"
                     tvWind.text = "${currentWeather.windM} mph"
                     tvDescription.text = currentWeather.conditionText
-                    if (currentWeather.conditionText.contains("rain".lowercase())) {
-                        animCurrentWeather.setAnimation(R.raw.partly_shower)
-                    } else {
-                        animCurrentWeather.setAnimation(R.raw.mostly_sunny)
-                    }
-                    tvLocation.text = dataStore.readLocation()
-
+//                    if (currentWeather.conditionText.contains("rain".lowercase())) {
+//                        animCurrentWeather.setAnimation(R.raw.partly_shower)
+//                    } else {
+//                        animCurrentWeather.setAnimation(R.raw.mostly_sunny)
+//                    }
+                    ivCurrentWeather.load(currentWeather.conditionIcon)
                     icLocation.setOnClickListener {
                         saveLocationDialog()
+                    }
+                    icSearch.setOnClickListener {
+                        viewModel.getCurrentWeather(etLocation.text.toString())
+                        viewModel.getForecast(etLocation.text.toString())
+                        icSearch.hideKeyboard()
                     }
                 }
 
@@ -81,7 +102,7 @@ class MainActivity : AppCompatActivity() {
         setupRv()
     }
 
-    private fun EditText.hideKeyboard(): Boolean {
+    private fun ImageView.hideKeyboard(): Boolean {
         return (context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
             .hideSoftInputFromWindow(windowToken, 0)
     }
@@ -132,4 +153,5 @@ class MainActivity : AppCompatActivity() {
             }.show()
         }
     }
+
 }

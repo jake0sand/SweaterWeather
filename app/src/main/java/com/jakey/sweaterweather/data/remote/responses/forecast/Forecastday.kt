@@ -13,8 +13,8 @@ data class Forecastday(
 
 fun Forecastday.toForecastLite(): ForecastLite {
     return ForecastLite(
-        tempF = day.maxtemp_f.toInt(),
-        windM = day.maxwind_mph.toInt(),
+        tempF = day.maxtemp_f.toInt().toString(),
+        windM = day.maxwind_mph.toInt().toString(),
         conditionIcon = "https:${day.condition.icon}",
         conditionText = day.condition.text,
         date = sdf.format(date_epoch * 1000)
