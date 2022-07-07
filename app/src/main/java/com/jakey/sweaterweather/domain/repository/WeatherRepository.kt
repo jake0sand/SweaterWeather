@@ -11,8 +11,8 @@ class WeatherRepository @Inject constructor(
     private val api: WeatherApi
 ) {
 
-    suspend fun getCurrentWeather(city: String): WeatherLite {
-        return api.getCurrentWeather(city = city).body()?.toWeather() ?: WeatherLite()
+    suspend fun getCurrentWeather(city: String?): WeatherLite {
+        return city?.let { api.getCurrentWeather(city = it).body()?.toWeather() } ?: WeatherLite()
     }
 
     suspend fun getForecast(city: String): List<ForecastLite> {

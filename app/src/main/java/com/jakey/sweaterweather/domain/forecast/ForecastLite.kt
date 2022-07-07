@@ -5,5 +5,5 @@ data class ForecastLite(
     val windM: String = "",
     val conditionText: String = "",
     val conditionIcon: String = "",
-    val date: String = ""
+    var date: String = ""
 )

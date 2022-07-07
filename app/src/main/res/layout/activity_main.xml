@@ -17,7 +17,9 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginVertical="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_current_temp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_description"
         tools:src="@drawable/thunderstorms" />
@@ -67,18 +69,20 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:visibility="gone"
-        app:lottie_loop="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:lottie_loop="true"
         app:lottie_rawRes="@raw/sunny_loading"
         app:lottie_speed="2" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/ic_location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:background="@drawable/custom_image_button"
         app:layout_constraintBottom_toBottomOf="@+id/et_location"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/et_location"
@@ -95,43 +99,49 @@
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/iv_current_weather"
         app:layout_constraintEnd_toEndOf="@+id/iv_current_weather"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/iv_current_weather"
-        app:layout_constraintTop_toBottomOf="@id/et_location"
+        app:layout_constraintTop_toBottomOf="@+id/et_location"
         tools:text="description" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/et_location"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@drawable/custom_edit_text"
         android:backgroundTint="@color/white"
+        android:drawableStart="@drawable/ic_search"
+        android:drawablePadding="8dp"
         android:ems="10"
+        android:imeOptions="actionSearch"
+        android:hint="City..."
         android:inputType="textAutoCorrect|textCapWords"
         android:lines="1"
-        android:hint="City..."
-        android:drawableStart="@drawable/ic_search"
-        android:textColorHint="@color/white"
-        android:drawablePadding="8dp"
-        android:paddingVertical="8dp"
         android:paddingHorizontal="8dp"
-        android:background="@drawable/custom_edit_text"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginStart="8dp"
+        android:paddingVertical="8dp"
+        android:textColorHint="@color/white"
         app:layout_constraintEnd_toStartOf="@id/ic_search"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintStart_toEndOf="@+id/ic_location"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/ic_search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginHorizontal="8dp"
-        app:layout_constraintStart_toEndOf="@id/et_location"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/et_location"
-        app:layout_constraintBottom_toBottomOf="@id/et_location"
+        android:background="@drawable/custom_image_button"
         android:src="@drawable/ic_check"
-        />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/et_location"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/et_location"
+        app:layout_constraintTop_toTopOf="@id/et_location" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
@@ -155,7 +165,6 @@
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp"
         tools:visibility="visible" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

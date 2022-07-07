@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginHorizontal="40dp"
-    style="@style/ThemeOverlay.Material3.Dialog"
+    android:layout_marginHorizontal="80dp"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -13,7 +12,7 @@
         android:id="@+id/edit_text_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_marginHorizontal="16dp"
         android:inputType="textCapWords"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
