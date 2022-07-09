@@ -2,7 +2,6 @@ package com.jakey.sweaterweather
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,7 +9,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -19,14 +17,12 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import coil.load
 import com.google.android.material.snackbar.Snackbar
 import com.jakey.sweaterweather.data.DataStoreManager
 import com.jakey.sweaterweather.databinding.ActivityMainBinding
 import com.jakey.sweaterweather.presentation.WeatherAdapter
 import com.jakey.sweaterweather.presentation.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -59,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         Log.d("Date", "TIME: $timeOfDay")
 
 
-        if (timeOfDay >= 17) binding.root.background = getDrawable(R.drawable.night_background)
+        if (timeOfDay >= 17 || timeOfDay < 5) binding.root.background = getDrawable(R.drawable.night_background)
 
         lifecycleScope.launchWhenStarted {
 
