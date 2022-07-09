@@ -43,7 +43,7 @@ class WeatherAdapter : RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder>() 
         val currentForecast = forecastList[position]
 
         holder.binding.apply {
-            tvWindForecast.text = currentForecast.windM.toString()
+            tvWindForecast.text = currentForecast.windM
             tvTempForecast.text = "HI   ${currentForecast.tempF}"
             ivForecast.load(currentForecast.conditionIcon)
             tvDay.text = currentForecast.date

@@ -13,7 +13,7 @@ interface WeatherApi {
         @Query("key") apiKey: String = BuildConfig.API_KEY,
         @Query("q") city: String,
         @Query("aqi") airQuality: String = "no"
-    ): Response<ForecastResponse>
+    ): ForecastResponse
 
     @GET("forecast.json")
     suspend fun getForecast(
@@ -22,5 +22,5 @@ interface WeatherApi {
         @Query("aqi") airQuality: String = "no",
         @Query("days") days: Int = 3,
         @Query("alerts") alerts: String = "no"
-    ): Response<ForecastResponse>
+    ): ForecastResponse
 }

@@ -1,16 +1,19 @@
 package com.jakey.sweaterweather.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jakey.sweaterweather.domain.current_weather.WeatherLite
 import com.jakey.sweaterweather.domain.repository.WeatherRepository
 import com.jakey.sweaterweather.data.DataStoreManager
 import com.jakey.sweaterweather.domain.forecast.ForecastLite
+import com.jakey.sweaterweather.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,23 +44,24 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
+    fun getCurrentWeather(city: String) {
+        viewModelScope.launch {
+            val result = repository.getCurrentWeather(city)
+            _isLoading.value = true
+            _weatherStateFlow.value = result.data ?: WeatherLite()
+            _isLoading.value = false
+        }
+    }
+
     fun getForecast(city: String) {
         viewModelScope.launch {
             _isLoading.value = true
             val response = repository.getForecast(city)
-            _forecastStateFlow.value = response
+            _forecastStateFlow.value = response.data ?: listOf(ForecastLite())
             _isLoading.value = false
         }
     }
 
-    fun getCurrentWeather(city: String) {
 
-        viewModelScope.launch {
-            _isLoading.value = true
-            val response = repository.getCurrentWeather(city)
-            _weatherStateFlow.value = response
-            _isLoading.value = false
-        }
-    }
 
 }
