@@ -1,5 +1,6 @@
 # SweaterWeather
 
-![ezgif-1-d447d962f5](https://user-images.githubusercontent.com/79411811/178132262-efbeabfa-6271-4e62-9620-ee7d11c74c45.gif)
+![ezgif-1-07d2faaab4](https://user-images.githubusercontent.com/79411811/178132285-3fbc9004-8433-4819-98b3-50faba81caa0.gif)   ![ezgif-1-c48a6f1c7b](https://user-images.githubusercontent.com/79411811/178132335-41c1f6dc-654e-4403-8154-c85ef00cc352.gif)
 
-![ezgif-1-ebb65f9955](https://user-images.githubusercontent.com/79411811/178132199-aaee2579-834e-4eef-89e9-f45a0c347181.gif)
+
+
