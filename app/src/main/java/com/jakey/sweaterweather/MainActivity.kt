@@ -55,7 +55,8 @@ class MainActivity : AppCompatActivity() {
         Log.d("Date", "TIME: $timeOfDay")
 
 
-        if (timeOfDay >= 17 || timeOfDay < 5) binding.root.background = getDrawable(R.drawable.night_background)
+        if (timeOfDay >= 17 || timeOfDay < 5) binding.root.background =
+            getDrawable(R.drawable.night_background)
 
         lifecycleScope.launchWhenStarted {
 
@@ -87,7 +88,6 @@ class MainActivity : AppCompatActivity() {
             viewModel.weatherStateFlow.collectLatest { currentWeather ->
                 binding.apply {
                     currentWeather.let {
-
                         tvCurrentTemp.text = "${currentWeather.tempF} °F"
                         tvWind.text = "${currentWeather.windM} mph"
                         tvDescription.text = currentWeather.conditionText
@@ -104,6 +104,9 @@ class MainActivity : AppCompatActivity() {
                             currentWeather.conditionText.contains("snow", true) -> {
                                 ivCurrentWeather.setAnimation(R.raw.snow_animation)
                             }
+                            currentWeather.conditionText.contains("blizzard", true) -> {
+                                ivCurrentWeather.setAnimation(R.raw.snow_animation)
+                            }
                         }
                         ivCurrentWeather.playAnimation()
 
@@ -117,10 +120,9 @@ class MainActivity : AppCompatActivity() {
                             icSearch.isVisible = false
                             icSearch.hideKeyboard()
                         }
-
-
+                        imeSearchRequest(etLocation)
                     }
-                    imeSearchRequest(etLocation)
+
                 }
             }
         }
@@ -136,11 +138,11 @@ class MainActivity : AppCompatActivity() {
                 // Do something of your interest.
                 // We in this examples created the following Toasts
                 if (editText.text.isNotBlank()) {
+                    viewModel.getCurrentWeather(editText.text.toString())
                     viewModel.getForecast(editText.text.toString())
                 }
                 editText.hideKeyboard()
                 binding.icSearch.isVisible = false
-                return@OnEditorActionListener true
             }
             false
         })
